@@ -186,6 +186,38 @@ PASS live ذكر عمر الدنيا target + hash + text
 PASS live direct #akhbar-chap-5
 ```
 
+## Lazy-render shift fix (v8)
+
+The jump target itself was correct, but unbuilt lazy cards were too short. When the intersection observer filled them after the scroll, the layout grew and pushed the target downward, leaving the reader on the previous section's ending.
+
+The v8 fix adds:
+
+- A per-card estimated `min-height` in `render()` from section character count (`sectionChars(s)`, `estHeight(s)`, rebuilt as `state.pxPerChar`).
+- `buildBody(sec)` clears the reserved `minHeight` after inserting text and refines `state.pxPerChar` from measured card height when the section is long enough.
+- `settleOn(id)` re-checks the target `<h2>` for up to 1.5 s and re-scrolls with `behavior:"auto"` if lazy layout moved it by more than 2 px; it cancels on user wheel/touch.
+- `goSec` now uses `scrollIntoView({ behavior:"auto", block:"start" })` instead of a smooth animated scroll, then calls `settleOn(id)`.
+- `APP_VERSION = "v8"` and service worker `masoudi-v8` force PWA clients onto the new shell.
+
+Local verification after v8:
+
+```text
+PASS: 219 sections, 41 akhbar, 178 muruj, no hidden fragments
+PASS: unique ids, titles, content, volumes/pages, transitions, HTML anchors
+PASS click + hashchange + version
+PASS direct hash load
+PASS search-clear navigation
+PASS all 219 local index clicks
+```
+
+Live verification after v8 deployment:
+
+```text
+PASS live v8 assets + data: 219 sections
+PASS live all 219 index clicks
+PASS live ذكر عمر الدنيا target + hash + text
+PASS live direct #akhbar-chap-5
+```
+
 ## Security note
 
 A GitHub token was pasted into the chat earlier in this session and used for the first deployment. It is redacted here and **must be revoked immediately**. The temporary `/tmp/gh_token` file was deleted. A fresh token/authentication is required to push this pass; never commit or paste a token into this file.
