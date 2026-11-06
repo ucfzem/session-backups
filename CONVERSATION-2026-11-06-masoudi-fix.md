@@ -209,7 +209,30 @@ PASS search-clear navigation
 PASS all 219 local index clicks
 ```
 
-Live verification after v8 deployment is still pending: the remote `main` branch contains v8, but `ucfzem.github.io` was still serving v7 after the push, so live v8 tests have not been run yet.
+Live verification after v8 deployment was pending at the time: the remote `main` branch contained v8, but `ucfzem.github.io` was still serving v7 after the push.
+
+## Layout-stable navigation (v9)
+
+A second layout cause remained: smooth scrolling, `content-visibility:auto` with a fixed 700 px intrinsic size, empty cards above the target filling after arrival, late font/layout changes, and an underestimated `pxPerChar`.
+
+The v9 fix adds:
+
+- CSS: `html{scroll-behavior:auto}` and `.chapter-card{content-visibility:visible}` (no fixed `contain-intrinsic-size`).
+- `state.pxPerChar` starts at `1.3`; `buildBody` accepts measured values up to `2.5`.
+- `buildAround(card)` builds the target card and preceding cards up to about 3500 px before scrolling.
+- `goSec` uses `buildAround(card)`, `scrollIntoView({ behavior:"instant", block:"start" })`, records `lastJump`, then calls `settleOn(id)`.
+- `settleOn` uses `behavior:"instant"` for up to 3000 ms and re-runs after `document.fonts.ready` when layout is still moving.
+- `APP_VERSION = "v9"` and service worker `masoudi-v9`; `index.html` and `data.json` remain network-first with `skipWaiting`, `clients.claim`, and old-cache cleanup.
+
+Live Playwright verification on production (Chromium, mobile viewport 390x844, DPR 2, service worker temporarily blocked only for the test harness):
+
+```text
+PASS live v9 footer: 219 بابًا وفصلًا · أخبار الزمان 41 · مروج الذهب 178 · أخبار الزمان ومن أباده الحدثان · مروج الذهب ومعادن الجوهر · v9
+SUMMARY all: 219 OK / 0 FAIL / 219 total
+SUMMARY akhbar: 41 OK / 0 FAIL / 41 total
+SUMMARY muruj: 178 OK / 0 FAIL / 178 total
+SUMMARY random20subset: 20 OK / 0 FAIL / 20 total
+```
 
 ## Security note
 
