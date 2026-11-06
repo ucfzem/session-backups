@@ -152,6 +152,40 @@ Live verification after deployment must still be run. Direct examples:
 - <https://ucfzem.github.io/masoudi-encyclopedia/#muruj-chap-1>
 - <https://ucfzem.github.io/masoudi-encyclopedia/#muruj-chap-178>
 
+## ID-only navigation simplification (v7)
+
+`buildIndex` was already correct: each entry carries `data-id = section.id`, and each rendered heading is `<h2 id="section.id">`.
+
+The click path passed `title`, `p`, and `id` into `robustJumpToSection`, leaving room for fuzzy resolution against text/page and for confusion with `page_id` (for example `akhbar-chap-5`: displayed page `31`, source `page_id=30`).
+
+The v7 fix makes index navigation ID-only:
+
+- Index clicks and keyboard activation call `jumpToId(target)` with `target = data-target || data-id`.
+- `jumpToId(id)` requires `DATA.byId[id]` and calls `goSec(id, { updateHash:true })`, which uses the rendered `<h2 id>`.
+- `robustJumpToSection` keeps only an ID-only compatibility path and never resolves by title text, displayed `p`, source `page_id`, or array position.
+- `.flash` is generalized for the target heading.
+- `APP_VERSION = "v7"` and service worker `masoudi-v7` force installed PWA clients onto the new shell.
+
+Local verification after v7:
+
+```text
+PASS: 219 sections, 41 akhbar, 178 muruj, no hidden fragments
+PASS: unique ids, titles, content, volumes/pages, transitions, HTML anchors
+PASS click + hashchange + version
+PASS direct hash load
+PASS search-clear navigation
+PASS all 219 local index clicks
+```
+
+Live verification after v7 deployment:
+
+```text
+PASS live v7 assets + data: 219 sections
+PASS live all 219 index clicks
+PASS live ذكر عمر الدنيا target + hash + text
+PASS live direct #akhbar-chap-5
+```
+
 ## Security note
 
 A GitHub token was pasted into the chat earlier in this session and used for the first deployment. It is redacted here and **must be revoked immediately**. The temporary `/tmp/gh_token` file was deleted. A fresh token/authentication is required to push this pass; never commit or paste a token into this file.
