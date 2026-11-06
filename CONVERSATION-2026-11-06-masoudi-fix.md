@@ -209,14 +209,7 @@ PASS search-clear navigation
 PASS all 219 local index clicks
 ```
 
-Live verification after v8 deployment:
-
-```text
-PASS live v8 assets + data: 219 sections
-PASS live all 219 index clicks
-PASS live ذكر عمر الدنيا target + hash + text
-PASS live direct #akhbar-chap-5
-```
+Live verification after v8 deployment is still pending: the remote `main` branch contains v8, but `ucfzem.github.io` was still serving v7 after the push, so live v8 tests have not been run yet.
 
 ## Security note
 
