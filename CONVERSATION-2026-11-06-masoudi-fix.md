@@ -118,9 +118,43 @@ Second pass changed files:
 - `masoudi-encyclopedia/sw.js`
 - `masoudi-encyclopedia/tools/validate_index.py`
 
+## Full clean-source rebuild (v6)
+
+The v5 navigation fix was insufficient because the old Muruj data itself was OCR-segmented with garbled titles and misplaced TOC text.
+
+The clean rebuild uses:
+
+- `أخبار الزمان`: Ketabonline book `6117`, 258 pages, structured index with 41 entries.
+- `مروج الذهب`: Ketabonline book `16498`, 1,697 pages, structured index; the rebuild selects 178 level-1 content headings and excludes front matter/index pages.
+
+New data counts:
+
+- `219` total sections.
+- `41` Akhbar chapters.
+- `178` Muruj chapters.
+- `4` Muruj volumes with explicit page/volume fields.
+- No hidden OCR fragments; every visible section has content.
+
+Verification:
+
+```text
+PASS: 219 sections, 41 akhbar, 178 muruj, no hidden fragments
+PASS: unique ids, titles, content, volumes/pages, transitions, HTML anchors
+PASS click + hashchange + version
+PASS direct hash load
+PASS search-clear navigation
+PASS all 219 local index clicks
+```
+
+Live verification after deployment must still be run. Direct examples:
+
+- <https://ucfzem.github.io/masoudi-encyclopedia/#akhbar-chap-5>
+- <https://ucfzem.github.io/masoudi-encyclopedia/#muruj-chap-1>
+- <https://ucfzem.github.io/masoudi-encyclopedia/#muruj-chap-178>
+
 ## Security note
 
-A GitHub token was pasted into the chat earlier in this session and used for the first deployment. It is redacted here and **must be revoked immediately**. The temporary `/tmp/gh_token` file was deleted. A fresh token/authentication is required to push the second pass; never commit or paste a token into this file.
+A GitHub token was pasted into the chat earlier in this session and used for the first deployment. It is redacted here and **must be revoked immediately**. The temporary `/tmp/gh_token` file was deleted. A fresh token/authentication is required to push this pass; never commit or paste a token into this file.
 
 ## Basair translation status (unchanged)
 
