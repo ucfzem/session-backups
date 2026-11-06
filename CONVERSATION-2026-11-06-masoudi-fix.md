@@ -30,6 +30,20 @@ Muruj is already chapter-based in the archive source. A few obvious OCR/TOC frag
 - Previous/next, active-index tracking, copy/share, and last-position restore now use IDs instead of flat array indices.
 - Bumped the service worker cache from `masoudi-v3` to `masoudi-v4` so installed PWA users receive the new shell and data.
 
+## Follow-up fix: robust hash navigation (v5)
+
+The first deploy fixed the data, but direct `#akhbar-chap-5` links and stale PWA caches could still open at the wrong place. The second pass adds:
+
+- `robustJumpToSection(sectionTitle, pageNum, sectionId)` with asynchronous yielding, title lookup, and a normalized DOM fallback.
+- Tashkeel/alef/ya/ta-marbuta normalization via the existing `norm()` / new `normTitle()`.
+- Dynamic header offset (`headerOffsetPx()`), CSS `scroll-margin-top:var(--anchor-offset,96px)`.
+- `afterPaint()` (rAF plus a 140 ms fallback) so scrolling still happens after a heavy render.
+- Direct hash support on boot and on `hashchange`; index clicks update the URL hash.
+- Gold flash highlight on the target heading.
+- Index items now expose `data-page` and `data-title`; headings expose `data-title`.
+- `APP_VERSION = "v5"`, `data.json?v=v5`, service-worker update check, and `controllerchange` reload.
+- Service worker `masoudi-v5`: network-first for navigations and `data.json`, cache fallback offline; cache-first for other shell assets.
+
 ## Verification
 
 Local data validation:
@@ -52,6 +66,14 @@ search "تنيس" cards: 3 count: 11 نتيجة
 PASS
 ```
 
+Robust navigation tests (local jsdom):
+
+```text
+PASS click + hashchange + version
+PASS direct hash load
+PASS search-clear navigation
+```
+
 Live verification after deployment:
 
 ```text
@@ -66,13 +88,16 @@ sw version v4: True
 
 - Fix: `eafe563` — `fix(masoudi): anchor index to exact chapter headings`
 - Cleanup: `ca52554` — `chore(masoudi): ignore Python cache`
-- Commit URL: <https://github.com/ucfzem/ucfzem.github.io/commit/ca525541e3205a32eb3129c67cca8090c2ee8635>
+- Robust nav + v5 cache: `7022b7a` — `fix(masoudi): robust hash navigation and v5 cache`
+- Initial commit URL: <https://github.com/ucfzem/ucfzem.github.io/commit/ca525541e3205a32eb3129c67cca8090c2ee8635>
+- Robust nav commit URL: <https://github.com/ucfzem/ucfzem.github.io/commit/7022b7a>
 
 ## Live links
 
 - Site: <https://ucfzem.github.io/masoudi-encyclopedia/>
 - Data: <https://ucfzem.github.io/masoudi-encyclopedia/data.json>
 - Direct example: <https://ucfzem.github.io/masoudi-encyclopedia/#akhbar-chap-5>
+- Another direct example: <https://ucfzem.github.io/masoudi-encyclopedia/#muruj-chap-1>
 - Repository: <https://github.com/ucfzem/ucfzem.github.io/tree/main/masoudi-encyclopedia>
 - Tools:
   - `masoudi-encyclopedia/tools/rebuild_data.py`
@@ -87,9 +112,15 @@ sw version v4: True
 - `masoudi-encyclopedia/tools/validate_index.py`
 - `masoudi-encyclopedia/tools/.gitignore`
 
+Second pass changed files:
+
+- `masoudi-encyclopedia/index.html`
+- `masoudi-encyclopedia/sw.js`
+- `masoudi-encyclopedia/tools/validate_index.py`
+
 ## Security note
 
-A GitHub token was pasted into the chat during this session and used for deployment. It is redacted here and **must be revoked immediately**. The temporary `/tmp/gh_token` file was deleted after deployment. Do not reuse that token.
+A GitHub token was pasted into the chat earlier in this session and used for the first deployment. It is redacted here and **must be revoked immediately**. The temporary `/tmp/gh_token` file was deleted. A fresh token/authentication is required to push the second pass; never commit or paste a token into this file.
 
 ## Basair translation status (unchanged)
 
