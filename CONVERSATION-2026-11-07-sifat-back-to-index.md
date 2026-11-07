@@ -28,9 +28,27 @@ LIVE_OK
 back-to-index present in live index.html
 ```
 
-## Commit
+## Refix: target actually lands on `#controls`
+
+The first version used a plain anchor jump to `#controls`. Because `#controls` is sticky under the site header, the button could appear to land on the previous position instead of the search/index controls.
+
+Revised behavior:
+
+- `#controls` now has `scroll-margin-top: var(--head-h, 73px)`.
+- The button click is handled explicitly: it computes `targetTop + scrollY - headerHeight` and smooth-scrolls there, then updates the hash to `#controls`.
+- Service worker bumped from `sifat-v7` to `sifat-v8`.
+
+Local Playwright check after scrolling down and clicking the button:
+
+```text
+{ top: 73, scrollY: 800, hash: '#controls' }
+OK true
+```
+
+## Commits
 
 - `1fb5006` — `fix(sifat): add floating back-to-index button`
+- `166fb3a` — `fix(sifat): scroll back-to-index to controls below sticky header`
 
 ## Links
 
