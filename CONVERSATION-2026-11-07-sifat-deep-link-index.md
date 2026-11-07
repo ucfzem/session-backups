@@ -81,3 +81,63 @@ Manual checks:
 - Raw HTML: <https://raw.githubusercontent.com/ucfzem/ucfzem.github.io/main/sifat-al-safwa/index.html>
 - Repo folder: <https://github.com/ucfzem/ucfzem.github.io/tree/main/sifat-al-safwa>
 - Backup md: <https://github.com/ucfzem/session-backups/blob/main/CONVERSATION-2026-11-07-sifat-deep-link-index.md>
+
+---
+
+## État final — clôture session
+
+**Date de clôture :** 2026-11-07
+**Statut :** ✅ Terminé — fonctionnalité validée, code nettoyé, taggé
+
+### Commits
+
+| Dépôt | Commit | Rôle |
+|---|---|---|
+| `ucfzem.github.io` | `c4041f9` | Deep-link chapitres validé Playwright (état de référence) |
+| `ucfzem.github.io` | `da04cf0` | Nettoyage : factorisation `slugify()` + fallback commenté |
+| `session-backups` | `65154d3` | Sauvegarde conversation (état avant clôture) |
+
+### Tag de sécurité
+
+`v-deeplink-ok` → `c4041f9`
+
+Filet de sécurité : en cas de régression future, `git revert` ou
+`git checkout v-deeplink-ok` restaure l'état validé par Playwright.
+
+### Preuve de non-régression des slugs
+
+- **68 catégories** indexées, slugs `#cat-<slug>` **identiques** avant et
+  après le refactor `slugify()`.
+- **SHA-256 des 68 slugs :**
+  `b976d0bcecc5f4dedf70907bf7238ff4ee4c4b1bdcf4203df182d495782ba859`
+- Toute URL `#cat-…` partagée avant le cleanup reste valide.
+
+### Validation fonctionnelle
+
+- Test Playwright local : clic sur `أهل المغرب` → scroll vers l'ancre,
+  position `top = 72.97px` (sous le header sticky), hash `#cat-…`,
+  panneau fermé. ✅
+- Fermeture du panneau : clic hamburger, touche Échap, clic extérieur. ✅
+- Recherche et filtres existants : non régressés. ✅
+
+### Décisions prises
+
+- **Fix 2 = A** : les cartes ont déjà `id="entry-<id>"`, fallback conservé
+  et commenté (pas d'IDs inventés).
+- **Factorisation `slugify()`** : une seule copie canonique dans l'IIFE
+  applicatif, exposée via `window.slugify`, duplicate supprimé.
+
+### Ce qui reste (non bloquant, reporté)
+
+Polish cosmétique uniquement, à ne traiter que sur signal utilisateur réel :
+
+- Champ de filtre dans le panneau (68 entrées à plat).
+- Scroll-spy (surlignage du chapitre actif pendant le scroll).
+- Performance de chargement (1025 cartes dans le DOM) — à investiguer
+  seulement si Lighthouse mobile le justifie.
+
+### Règle de clôture
+
+Tant qu'aucun utilisateur ne remonte un problème concret, **ne pas
+toucher au code**. Chaque modification post-`v-deeplink-ok` doit être
+justifiée par un bug reproductible, pas par du polish.
