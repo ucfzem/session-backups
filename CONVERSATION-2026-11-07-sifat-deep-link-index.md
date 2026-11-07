@@ -34,9 +34,44 @@ Raw GitHub code contains the new chapter anchors:
 anchor = '<div class="chapter-anchor" id="cat-' + slugify(it.category) + '" data-category="' + esc(it.category) + '"></div>'
 ```
 
-## Commit
+## Finitions post-c4041f9
+
+Inspection:
+
+- `slugify()` existed in two IIFEs and was semantically identical (whitespace only).
+- Rendered cards already have `id="entry-<id>"`.
+- The `entry-<id>` fallback is reachable when a category has no rendered `#cat-<slug>` anchor yet, so Fix 2 choice is **A** (keep it).
+- The rendered list is semi-grouped, but categories recur later, so anchors are deduplicated per rendered `#list` pass.
+
+Changes:
+
+- Kept one canonical `slugify()` in the app IIFE and exposed it as `window.slugify`.
+- Removed the duplicate `slugify()` from the index-panel IIFE.
+- Added a comment explaining the `entry-<id>` fallback.
+- Bumped service worker to `sifat-v13`.
+- Tagged the validated deep-link commit as `v-deeplink-ok`.
+
+Slug non-regression check over the 68 distinct categories:
+
+```text
+count 68
+before b976d0bcecc5f4dedf70907bf7238ff4ee4c4b1bdcf4203df182d495782ba859
+after  b976d0bcecc5f4dedf70907bf7238ff4ee4c4b1bdcf4203df182d495782ba859
+equal true
+```
+
+Manual checks:
+
+1. Clicking `أهل المغرب` still scrolls to `#cat-…`, URL unchanged, panel closed.
+2. Special-character category names still produce stable slugs.
+3. Reloading a `#cat-…` URL still lands on the rendered chapter anchor.
+4. Search/filters unchanged.
+5. Panel open/close unchanged.
+
+## Commits
 
 - `c4041f9` — `fix(sifat): deep-link chapter index entries`
+- `da04cf0` — `chore: factorisation slugify + nettoyage fallback jumpToChapter`
 
 ## Links
 
