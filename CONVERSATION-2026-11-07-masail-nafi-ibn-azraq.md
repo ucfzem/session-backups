@@ -18,7 +18,7 @@
 Created a static PWA app in `masail-nafi-ibn-azraq/`:
 
 - `index.html` — Arabic-only RTL reading UI, search/highlight, word/root/number index, online/offline badge.
-- `masail.json` — parsed from Turath book 23622 pages; **249 masail** (IDs 1–250, one source number missing), 193 with structured poetry.
+- `masail.json` — parsed from Turath book 23622 pages; **250 masail** (IDs 1–250), 194 with structured poetry, sura/ayah extracted for 249 entries where footnotes provided them.
 - `manifest.json`, `sw.js`, icons.
 
 ## Tests
@@ -31,6 +31,7 @@ Created a static PWA app in `masail-nafi-ibn-azraq/`:
 
 - `5a0c3f1` — `feat(masail): add Masail Nafi ibn al-Azraq app and Works Maktaba card`
 - `173ca01` — `feat(masail): Arabic-only UI cleanup`
+- `483ce86` — `fix(masail): complete all 250 entries with sura/ayah metadata`
 
 ## Links
 
