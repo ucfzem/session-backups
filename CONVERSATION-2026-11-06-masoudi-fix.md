@@ -146,7 +146,7 @@ PASS search-clear navigation
 PASS all 219 local index clicks
 ```
 
-Live verification after deployment must still be run. Direct examples:
+Live verification after v6 deployment must still be run. Direct examples:
 
 - <https://ucfzem.github.io/masoudi-encyclopedia/#akhbar-chap-5>
 - <https://ucfzem.github.io/masoudi-encyclopedia/#muruj-chap-1>
@@ -237,6 +237,27 @@ SUMMARY random20subset: 20 OK / 0 FAIL / 20 total
 ## Security note
 
 A GitHub token was pasted into the chat earlier in this session and used for the first deployment. It is redacted here and **must be revoked immediately**. The temporary `/tmp/gh_token` file was deleted. A fresh token/authentication is required to push this pass; never commit or paste a token into this file.
+
+## Separate footnotes from main text (v10)
+
+The parser treated page footnote paragraphs as ordinary paragraphs, so notes were interleaved into the matn.
+
+v10 fixes:
+
+- `is_footnote()` classifies paragraphs beginning with an Arabic footnote number + `)`.
+- Main text is stored in `x`; notes are stored in `footnotes` and rendered after the chapter body.
+- Akhbar p.87 now reads continuously:
+
+```text
+continuous True
+footnotes 8 in-x False
+```
+
+- Service worker/app bumped to `masoudi-v10` / `v10`.
+
+## Commits
+
+- `d66a88a` — `fix(masoudi): separate footnotes from main text v10`
 
 ## Basair translation status (unchanged)
 
