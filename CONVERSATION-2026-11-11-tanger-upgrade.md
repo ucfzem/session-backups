@@ -1,5 +1,7 @@
 # Tanger d'Antan — Additive Upgrade (2026-11-11)
 
+> SUPERSEDED: this version was rolled back due to a nav-width regression. See `CONVERSATION-2026-11-11-tanger-nav-fix.md` and `ROLLBACK.md` for the current deployed commit.
+
 ## Directive
 User asked to upgrade the live Tanger d'Antan site while **keeping the existing dark-cinematic theme and colors** ("Keep Tanger d'Antan theme and colors"), then test, deploy, back up the conversation, and share links.
 
