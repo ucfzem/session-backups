@@ -211,3 +211,19 @@ images/
 - Link tree: https://ucfzem.github.io/works/
 - Link-tree repository: https://github.com/ucfzem/ucfzem.github.io
 - Conversation backup: this file in `ucfzem/session-backups`
+
+
+## Addendum — old-device/TV fixes after this backup
+
+The app has since been updated beyond the state described above:
+- `ad82808` → `0790121` — old-device/Smart-TV optimization, D-pad navigation, focus restoration, color-mix fallbacks, app `v1.2.0`, SW `earth-proofs-shell-v1.5.0`.
+- `0790121` → `25b53bf` — eager image loading for old devices, TV/lite `content-visibility` fallback, app `v1.2.1`, SW `earth-proofs-shell-v1.5.1`.
+
+Current verified state:
+- 200 card images and the modal image use `loading="eager"`.
+- No WebP is used; diagrams are SVG.
+- TV/lite mode restores `content-visibility: visible`.
+- Live test: 200/200 images loaded, drawer/modal D-pad works, no console errors.
+
+Detailed combined backup:
+https://github.com/ucfzem/session-backups/blob/main/CONVERSATION-2026-11-12-old-devices-tv-and-arabic-fonts.md

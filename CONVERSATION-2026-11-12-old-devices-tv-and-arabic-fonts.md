@@ -90,7 +90,7 @@ Files: `index.html`, `style.css`, `app.js`, `sw.js`
 - Playwright live smoke tests passed for:
   - Tanger Arabic font and FR typography preservation;
   - Tanger Histoire TV mode, nav blur removal, and focus outline;
-  - Earth Proofs TV mode, drawer D-pad, modal focus restore, v1.2.0.
+  - Earth Proofs TV mode, drawer D-pad, modal focus restore, v1.2.1.
 
 ## Live links
 - Tanger gallery: https://ucfzem.github.io/tanger/
@@ -100,5 +100,37 @@ Files: `index.html`, `style.css`, `app.js`, `sw.js`
 ## Notes
 - `https://tangerdantan.is-a.dev/histoire/` remains inactive; use the GitHub Pages URLs above.
 - FR/EN/ES typography intentionally unchanged.
-- Earth Proofs service-worker cache version is `earth-proofs-shell-v1.5.0`.
+- Earth Proofs service-worker cache version is `earth-proofs-shell-v1.5.1`.
 - No secrets are stored in this document.
+
+
+## Addendum — image loading fallback for old devices
+Date: 2026-11-12
+Commits:
+- ucfzem/tanger `5dbe5e7` — `fix: load gallery and history images eagerly on old devices`
+- ucfzem/earth-proofs-pwa `25b53bf` — `fix: load proof images eagerly on old devices`
+
+Findings:
+- No `.webp` files or WebP references were found in Tanger or Earth Proofs.
+- Tanger uses JPG/PNG; Earth Proofs uses SVG. A `<picture>` WebP fallback was therefore not required.
+- No `data-src` lazy-loading script, `translate3d`, or image `will-change` was present after the fix.
+
+Changes:
+- Tanger gallery loads the real JPG/PNG directly with `loading="eager"`; the old placeholder/data-real preload loop was removed. The placeholder is kept only as an `onerror` fallback.
+- Tanger Histoire changed all 10 content images from `loading="lazy"` to `loading="eager"`.
+- Earth Proofs changed all 200 card images and the modal image to `loading="eager"`.
+- Earth Proofs TV/lite mode now overrides `content-visibility` back to `visible`.
+- Removed the fixed grain overlay `will-change: transform` from the Tanger gallery.
+- Earth Proofs app version bumped to `v1.2.1`; SW cache bumped to `earth-proofs-shell-v1.5.1`.
+
+Verification:
+- Tanger gallery: 60/60 images eager and loaded; lightbox before/after images loaded.
+- Tanger Histoire: 10/10 images eager and loaded.
+- Earth Proofs: 200/200 card images eager and loaded; modal image eager; TV mode content visibility `visible`.
+- Live GitHub Pages tests passed for the same counts.
+- FR/EN/ES fonts still unchanged; Arabic remains Amiri.
+
+Cloudflare worker check:
+- `https://ucfzem.azer-tyu199p.workers.dev/histoire/` returned HTTP 404.
+- Its root currently serves the Works page, not Tanger Histoire.
+- Use `https://ucfzem.github.io/tanger/histoire/` until the worker route is fixed.
