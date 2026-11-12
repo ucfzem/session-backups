@@ -125,6 +125,47 @@ La deuxième section historique n'était pas masquée par le CSS, le JS ou le ca
 - Persistance de langue testée sur les 2 domaines : EN depuis la page principale → page histoire, puis AR depuis l'histoire → page principale.
 - Aucun service worker ajouté ou modifié.
 
+## 5. Réattribution complète des images de la page Histoire (2026-11-12)
+
+### Problème signalé
+Le mapping image/texte était cassé sur toute la page : maison blanche moderne en Préhistoire, vue aérienne en Romain, grue industrielle en Portugais, plage avec voitures en Alaouite, etc.
+
+### Audit et mapping appliqué (22 figures)
+| # | Section | Ancienne image | Nouvelle image | Logique |
+|---|---|---|---|---|
+| 1 | Préhistoire — grottes/paysage | `phare-charf-1970.jpg` | `route-de-la-plage-hotesses-1911.jpg` | paysage côtier naturel ancien, pas de bâtiment moderne |
+| 2 | Préhistoire — échanges puniques | `tanger-vue-aerienne-1912.jpg` | `tanger-vue-aerienne-1912.jpg` | vue historique de la baie, légende adaptée |
+| 3 | Romain — Tingis | `kasbah-1940.jpg` | `bab-fahs-1933.jpg` | porte/arche historique, pas de vue aérienne |
+| 4 | Conquête islamique | `medina-1945.jpg` | `medina-1945.jpg` | médina, légende adaptée |
+| 5 | Almoravides/Almohades/Mérinides | `grand-socco-1925.jpg` | `grand-socco-1925.jpg` | cœur urbain médiéval, légende adaptée |
+| 6 | Ibn Battuta | `dar-al-salaf-1936.jpg` | `dar-al-salaf-1936.jpg` | mémoire lettrée, légende adaptée |
+| 7 | Portugais/Espagnols | `port-1930.jpg` | `quartier-monopolio-1940.jpg` | présence européenne, pas de grue moderne |
+| 8 | Anglais — Porte de l'Eau | `puerta-del-mar-1965.jpg` | `puerta-del-mar-1965.jpg` | porte/fortification, légende adaptée |
+| 9 | Reprise de 1684 | `place-roudani-1934.jpg` | `rue-des-vignes-1923.jpg` | rue ancienne, pas de voitures modernes |
+| 10 | Alaouite XVIIIe–XIXe | `petit-socco-1938.jpg` | `petit-socco-1938.jpg` | photo sépia ancienne, légende adaptée |
+| 11 | Tanger diplomatique | `place-gouvernement-1952.jpg` | `villa-de-france-1912.jpg` | bâtiment ancien, artistes/diplomates |
+| 12 | Zone internationale | `zone-internationale-1932.jpg` | `zone-internationale-1932.jpg` | inchangé, correct |
+| 13 | Centre financier | `bd-pasteur-1955.jpg` | `bd-pasteur-1955.jpg` | inchangé, correct |
+| 14 | Café Hafa | `cafe-hafa-1935.jpg` | `cafe-hafa-1935.jpg` | inchangé, correct |
+| 15 | Après l'indépendance | `ville-nouvelle-1958.jpg` | `ville-nouvelle-1958.jpg` | inchangé, correct |
+| 16 | Tanger contemporaine | `corniche-1960.jpg` | `marche-casabarata-1981.jpg` | image plus récente, vie urbaine |
+| 17 | Port/Tanger Med | `port-tanger-1968.jpg` | `port-tanger-1968.jpg` | légende corrigée : port historique → Tanger Med |
+| 18 | Industrie/automobile | `sucrerie-al-rai-hani-1984.jpg` | `sucrerie-al-rai-hani-1984.jpg` | légende corrigée : sucrerie, pas Renault |
+| 19 | Tourisme | `plage-tanger-1950.jpg` | `cafe-gibraltar-1978.jpg` | cafés/art de vivre, image plus récente |
+| 20 | Kasbah | `marche-central-1942.jpg` | `kasbah-1940.jpg` | image réellement consacrée à la Kasbah |
+| 21 | Patrimoine européen | `la-grande-poste-1944.jpg` | `theatre-cervantes-1913.jpg` | théâtre, patrimoine architectural/culturel |
+| 22 | Références | `rue-de-fes-1928.jpg` | `rue-de-fes-1928.jpg` | médina/sources, légende adaptée |
+
+### Limite documentaire
+La banque locale ne contient pas d'images d'époque exactes des grottes d'Hercule, de ruines romaines, d'Ibn Battuta ou du siège de 1684. Les clichés les plus anciens ou les plus proches ont été utilisés, et toutes les légendes/alt ont été réécrits pour décrire l'image réelle. Pour des visuels d'époque strictement exacts, il faudra ajouter des images externes (Wikimedia Commons/BnF).
+
+### Tests et live
+- Local : 4 langues × 2 viewports, 22/22 images chargées, 12 chapitres, 17 liens TOC, thème sombre/low-end, aucune erreur JS, aucun overflow, aucune erreur HTTP image.
+- Live : 16 combinaisons (2 domaines × 4 langues × desktop/mobile), src et légendes vérifiés un par un, 22/22 images, aucune erreur JS/HTTP, FR/EN/ES sans texte arabe résiduel.
+- Commit : `410a04a` — `Fix history page image chronology and captions`
+- `histoire/index.html` : 271 761 octets, sha256 `6a30c1122ff4c7ac50d0619f3180a89975f90caaae89e3144a0da6c2396102ff`
+- GitHub Pages et worker Cloudflare servent exactement le même fichier.
+
 ## Liens
 - Checkers live : https://ucfzem.github.io/checkers/
 - Commit Checkers : https://github.com/ucfzem/ucfzem.github.io/commit/93e7a25
@@ -135,5 +176,6 @@ La deuxième section historique n'était pas masquée par le CSS, le JS ou le ca
 - Commit Tanger (section Histoire) : https://github.com/ucfzem/tanger/commit/841d3e7
 - Commit Tanger (correctif galerie + drapeaux) : https://github.com/ucfzem/tanger/commit/0fcfffe
 - Commit Tanger (page complète Histoire) : https://github.com/ucfzem/tanger/commit/a893be0
+- Commit Tanger (réattribution des images) : https://github.com/ucfzem/tanger/commit/410a04a
 - Dépôt Tanger : https://github.com/ucfzem/tanger
 - Backup : https://github.com/ucfzem/session-backups/blob/main/CONVERSATION-2026-11-11-checkers-capture-rules-et-tanger-diagnostic.md
