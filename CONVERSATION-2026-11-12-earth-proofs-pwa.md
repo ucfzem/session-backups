@@ -17,17 +17,24 @@ Build a polished multilingual edition of the “Cosmic Proofs” material, then:
 
 - App: https://ucfzem.github.io/earth-proofs-pwa/
 - Repository: https://github.com/ucfzem/earth-proofs-pwa
-- App commit: `60eb632` — `feat: add multilingual cosmic proofs encyclopedia`
+- Latest app commit: `6335a1b` — `feat(i18n): use flag pills and smooth language transition`
+- Earlier app commits:
+  - `345482e` — `fix(i18n): isolate language storage and polish responsive typography`
+  - `60eb632` — `feat: add multilingual cosmic proofs encyclopedia`
 
 ### Features
 
 - 200 numbered entries, 10 strands × 20 entries.
 - Languages: Arabic (RTL), English, French, Spanish.
+- Dynamic flag pills: 🇲🇦 AR, 🇺🇸 EN, 🇫🇷 FR, 🇪🇸 ES, with accessible labels and pressed state.
+- Fade-and-slide transition on the header title and card grid when changing language.
 - Instant search by number, title, or keyword.
 - Category filtering.
 - Accessible detail modal with previous/next navigation.
 - Light and dark themes.
-- Responsive desktop/mobile layout, no horizontal overflow at 390 px.
+- Responsive desktop/mobile layout, no horizontal overflow at 320, 360, or 390 px.
+- Arabic is the default language; browser auto-detection is intentionally disabled.
+- Language/theme storage keys are namespaced to avoid collisions on the shared `ucfzem.github.io` origin.
 - Installable PWA manifest with SVG favicon and PNG icons.
 - Service worker offline support for the app shell, full dataset, and diagrams.
 - “Download images for offline use” button using the Cache API.
@@ -72,30 +79,36 @@ The existing Maktaba list went from 30 to 31 entries. All previous entries were 
 ### Local app tests
 
 - 200/200 cards rendered.
+- Old `app_lang`/`app_theme` keys were ignored; app still started in Arabic.
+- Four flag pills rendered with correct flags, initials, names, titles, and `aria-pressed` state.
+- Each language click updated `lang`, `dir`, heading, cards, active pill, namespaced storage key, and card-grid animation.
+- Keyboard activation of a language pill worked.
 - 10 categories + “All” filter = 11 pills.
 - Category filter returned 20 entries.
 - Search returned matching results.
-- Modal opened, counter showed `1 / 200`, next button moved to `2 / 200`.
-- Language switch to English changed the heading and direction.
+- Modal opened; next/previous navigation updated the counter correctly.
 - Theme switch changed `data-theme`.
 - Image download completed with “All images are saved for offline use.”
-- Service worker became active and cached 21 shell assets.
+- Service worker became active with cache `earth-proofs-shell-v1.2.0`.
 - Offline reload still rendered 200 cards and showed “Offline.”
 - No console errors, page errors, or failed requests.
-- All JSON files parsed; all JS files passed `node --check`; all SVGs passed XML validation.
-- Mobile viewport 390 px: no horizontal overflow.
+- All JS files passed `node --check`; all SVGs passed XML validation.
+- Mobile viewports 320/360/390 px: no horizontal overflow; 390 px header fits in two rows.
 
 ### Live app tests
 
 - https://ucfzem.github.io/earth-proofs-pwa/ returned HTTP 200.
-- `data.json` returned HTTP 200 with 200 entries.
-- Manifest, icons, and SVG diagrams returned HTTP 200.
+- `index.html`, `style.css`, `app.js`, `translations.js`, `data.json`, `manifest.json`, `sw.js`, PNG icon, and SVG diagram all returned HTTP 200.
+- Live deployment contains `langContainer`, `renderLanguageSelector`, `lang-animating`, and `earth-proofs-shell-v1.2.0`.
 - Live page rendered 200 cards.
-- Images rendered correctly after lazy loading.
-- Search/filter/modal/language switching worked.
-- Service worker cache contained 21 shell assets.
-- Offline live reload rendered 200 cards and showed “Offline.”
-- No console errors.
+- All four flag pills switched language and direction correctly; animation class was applied each time.
+- Search for `water` returned 23 entries; modal next/previous navigation worked.
+- Service worker controlled the page; manifest had 3 icons and `display: standalone`.
+- Cache `earth-proofs-shell-v1.2.0` contained 21 shell assets.
+- Offline live reload rendered 200 cards and showed “Hors ligne.”
+- Mobile viewport 390 px: no horizontal overflow; four pills remained on one row.
+- No console errors, page errors, or failed requests.
+- Lighthouse was not run in this environment; manifest, SW registration/control, install metadata, and offline behavior were verified directly.
 
 ### Live works tests
 
@@ -140,13 +153,20 @@ images/
 - Dataset is 200 entries with the shape `{id, categoryKey, image_url, translations:{ar,en,fr,es:{title,content,scientific_note}}}`.
 - Images are original category diagrams reused across each strand.
 - App caches:
-  - `earth-proofs-shell-v1.0.0`
+  - `earth-proofs-shell-v1.2.0`
   - `earth-proofs-images-v1`
 - Works cache:
   - `works-v1.0.31`
+- Namespaced storage keys:
+  - `earth-proofs-lang`
+  - `earth-proofs-theme`
 - No existing app folders in `ucfzem.github.io` were modified.
 - Only `works/index.html` and `works/sw.js` were changed in the link-tree repository.
 - Backups of the pre-change works files were saved locally before editing.
+- `translations.js` now stores `name`, `initial`, and `flag` metadata for each language.
+- The language selector is rendered dynamically by `app.js`; click handling is delegated from `#langContainer`.
+- Language transitions animate `.brand-title` and `#cardsGrid` via the `.lang-animating` class.
+- Reduced-motion preferences are respected by the existing global animation guard.
 
 ## Shared links
 
