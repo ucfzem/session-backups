@@ -70,11 +70,34 @@ La deuxième section historique n'était pas masquée par le CSS, le JS ou le ca
 - Fichier live : 114 736 octets, sha256 `bcd22337c09cac204ed5e7f94e1be4a3dd915890c67f2a8e8083f025815e27ca`
 - GitHub Pages et worker Cloudflare servent exactement le même fichier.
 
+## 3. Correctif bugs galerie + drapeaux (2026-11-12)
+
+### Bug 1 — galerie coupée / images invisibles
+- Cause : les `.gallery-item` démarraient à `opacity:0` et n'étaient révélés que par un `IntersectionObserver` au scroll. Un défilement rapide ou un saut direct vers `#galerie` pouvait sauter des éléments, qui restaient invisibles. `content-visibility:auto` + `contain-intrinsic-size` aggravait le rendu partiel.
+- Correctif : suppression de l'état `opacity:0` / `translateY`, suppression de l'observer de fade-in et de `content-visibility:auto`. Les 60 éléments sont visibles dès le rendu, quel que soit le scroll.
+- Vérifié : HTML valide (aucune balise non fermée), 60 `<img>` présents, aucun `max-height` / `overflow:hidden` / `display:none` sur la galerie.
+
+### Bug 2 — drapeaux absents
+- Cause : les boutons de langue étaient volontairement passés en texte seul (FR/EN/ES/AR) lors d'un correctif précédent de largeur de nav.
+- Correctif : ajout des emojis directement dans le HTML — 🇫🇷 FR, 🇬🇧 EN, 🇪🇸 ES, 🇲🇦 AR — avec `.lang-flag` (emoji font, `margin-inline-end`, sans overflow).
+- Vérifié de 320 px à 1920 px, FR et AR, sans débordement horizontal.
+
+### Service Worker
+- Tanger n'a **aucun** `sw.js` et la page live ne possède aucun service worker de contrôle (`navigator.serviceWorker.controller === null`, zéro registration).
+- Le SW racine de `ucfzem.github.io` (scope `/`) ignore `/tanger/` car Tanger n'est pas dans sa liste `APPS`.
+- Il n'y a donc pas de version `v5 → v6` à incrémenter pour Tanger. Le worker Cloudflare envoie déjà `no-cache` ; GitHub Pages/CDN peut conserver l'ancien HTML quelques minutes, un rechargement forcé suffit.
+
+### Commit / live
+- Commit : `0fcfffe` — `Fix gallery blank rows and add language flag emojis`
+- Fichier live : sha256 `3a59222e75792e046927390662ac5db590f985c586ce08d171e63c418a2a31e7`
+- GitHub Pages et worker servent le même fichier.
+
 ## Liens
 - Checkers live : https://ucfzem.github.io/checkers/
 - Commit Checkers : https://github.com/ucfzem/ucfzem.github.io/commit/93e7a25
 - Tanger live : https://ucfzem.github.io/tanger/
 - Tanger worker : https://ucfzem.azer-tyu199p.workers.dev/tanger/
-- Commit Tanger : https://github.com/ucfzem/tanger/commit/841d3e7
+- Commit Tanger (section Histoire) : https://github.com/ucfzem/tanger/commit/841d3e7
+- Commit Tanger (correctif galerie + drapeaux) : https://github.com/ucfzem/tanger/commit/0fcfffe
 - Dépôt Tanger : https://github.com/ucfzem/tanger
 - Backup : https://github.com/ucfzem/session-backups/blob/main/CONVERSATION-2026-11-11-checkers-capture-rules-et-tanger-diagnostic.md
