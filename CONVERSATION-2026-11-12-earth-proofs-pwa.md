@@ -17,8 +17,9 @@ Build a polished multilingual edition of the “Cosmic Proofs” material, then:
 
 - App: https://ucfzem.github.io/earth-proofs-pwa/
 - Repository: https://github.com/ucfzem/earth-proofs-pwa
-- Latest app commit: `ecff630` — `feat(nav): add searchable proof index drawer`
+- Latest app commit: `ad82808` — `feat(theme): apply Nuzhat al-Mushtaq manuscript palette`
 - Earlier app commits:
+  - `ecff630` — `feat(nav): add searchable proof index drawer`
   - `6335a1b` — `feat(i18n): use flag pills and smooth language transition`
   - `345482e` — `fix(i18n): isolate language storage and polish responsive typography`
   - `60eb632` — `feat: add multilingual cosmic proofs encyclopedia`
@@ -39,8 +40,13 @@ Build a polished multilingual edition of the “Cosmic Proofs” material, then:
 - Light and dark themes.
 - Responsive desktop/mobile layout, no horizontal overflow at 320, 360, or 390 px.
 - Arabic is the default language; browser auto-detection is intentionally disabled.
+- Nuzhat al-Mushtaq palette: obsidian/charcoal + antique gold in dark mode, warm parchment + bronze-gold in light mode.
+- Dark mode is now the default for new visitors; saved light/dark preference is respected.
+- Amiri is used for Arabic scholarly reading and Inter for clean Latin/UI text.
+- Close controls are minimalist 34 px × buttons instead of text labels.
 - Language/theme storage keys are namespaced to avoid collisions on the shared `ucfzem.github.io` origin.
 - Category counts are refreshed after `data.json` finishes loading, so they no longer remain at 0 on first render.
+- The Service Worker caches the Google Fonts stylesheet and font files after the first controlled load for offline typography.
 - Installable PWA manifest with SVG favicon and PNG icons.
 - Service worker offline support for the app shell, full dataset, and diagrams.
 - “Download images for offline use” button using the Cache API.
@@ -101,26 +107,34 @@ The existing Maktaba list went from 30 to 31 entries. All previous entries were 
 - Modal opened; next/previous navigation updated the counter correctly.
 - Theme switch changed `data-theme`.
 - Image download completed with “All images are saved for offline use.”
-- Service worker became active with cache `earth-proofs-shell-v1.3.0`.
+- Service worker became active with cache `earth-proofs-shell-v1.4.0`.
 - Offline reload still rendered 200 cards and showed “Offline.”
 - No console errors, page errors, or failed requests.
 - All JS files passed `node --check`; all SVGs passed XML validation.
+- Default theme was dark: obsidian `#0e1116`, parchment text `#e6e1d6`, antique-gold `#d4af37`.
+- Light theme switched correctly to parchment `#f7f4eb`, sepia ink `#231f1a`, bronze-gold `#9a7218`.
+- Computed Arabic font was Amiri; computed English font was Inter.
+- Search clear, modal close, and drawer close rendered as 34 px × controls with translated `aria-label`/`title`.
 - Mobile viewports 320/360/390 px: no horizontal overflow; header controls wrap cleanly.
 
 ### Live app tests
 
 - https://ucfzem.github.io/earth-proofs-pwa/ returned HTTP 200.
 - `index.html`, `style.css`, `app.js`, `translations.js`, `data.json`, `manifest.json`, `sw.js`, PNG icon, and SVG diagram all returned HTTP 200.
-- Live deployment contains `langContainer`, `renderLanguageSelector`, `lang-animating`, `hamburgerBtn`, `proofsDrawer`, and `earth-proofs-shell-v1.3.0`.
+- Live deployment contains `langContainer`, `renderLanguageSelector`, `lang-animating`, `hamburgerBtn`, `proofsDrawer`, the Amiri/Inter import, and `earth-proofs-shell-v1.4.0`.
 - Live page rendered 200 cards with `عدد المداخل: 200`.
 - Live category counts were correct: 200 total and 20 per strand.
+- Live default theme was dark with the Nuzhat palette; light theme toggle produced the parchment palette.
+- Live Arabic typography loaded Amiri; English typography loaded Inter.
+- Live × close controls were present in the search bar, modal, and drawer.
 - All four flag pills switched language and direction correctly; animation class was applied each time.
 - Live hamburger drawer listed 200 proofs; filtering and direct jump to proof 200 worked.
 - LTR drawer opened on the left; RTL drawer opened on the right.
 - Mobile drawer was 340 px wide at 390 px viewport and listed all 200 proofs.
 - Search for `water` returned 23 entries; modal next/previous navigation worked.
 - Service worker controlled the page; manifest had 3 icons and `display: standalone`.
-- Cache `earth-proofs-shell-v1.3.0` contained 22 cached requests after navigation.
+- Cache `earth-proofs-shell-v1.4.0` contained 28 cached requests, including 6 Google Fonts requests.
+- Offline Arabic reload still used Amiri after the second controlled load.
 - Offline live reload rendered 200 cards with correct counts and showed “دون اتصال.”
 - Offline live drawer still listed all 200 proofs.
 - Mobile viewport 390 px: no horizontal overflow; four pills remained on one row.
@@ -170,7 +184,7 @@ images/
 - Dataset is 200 entries with the shape `{id, categoryKey, image_url, translations:{ar,en,fr,es:{title,content,scientific_note}}}`.
 - Images are original category diagrams reused across each strand.
 - App caches:
-  - `earth-proofs-shell-v1.3.0`
+  - `earth-proofs-shell-v1.4.0`
   - `earth-proofs-images-v1`
 - Works cache:
   - `works-v1.0.31`
@@ -186,7 +200,9 @@ images/
 - Drawer markup is `#proofsDrawer`; it is opened by `#hamburgerBtn` and filtered through `#drawerSearchInput`.
 - Drawer items are real buttons with delegated click handling, `aria-label`s, focus trapping, Escape/backdrop close, and focus restoration.
 - Reduced-motion preferences are respected by the existing global animation guard.
-- The Service Worker keeps the established `earth-proofs-shell-*` naming and robust cache strategies rather than renaming to a generic cache key; version `v1.3.0` forces the update and removes older shell caches.
+- The Service Worker keeps the established `earth-proofs-shell-*` naming and robust cache strategies rather than renaming to a generic cache key; version `v1.4.0` forces the update and removes older shell caches.
+- Google Fonts CSS is cached as an opaque response; font files are cached via stale-while-revalidate.
+- `manifest.json` and the `theme-color` meta now use the Nuzhat dark theme colors.
 
 ## Shared links
 
