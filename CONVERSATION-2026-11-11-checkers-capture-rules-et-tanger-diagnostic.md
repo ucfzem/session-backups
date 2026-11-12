@@ -92,12 +92,48 @@ La deuxième section historique n'était pas masquée par le CSS, le JS ou le ca
 - Fichier live : sha256 `3a59222e75792e046927390662ac5db590f985c586ce08d171e63c418a2a31e7`
 - GitHub Pages et worker servent le même fichier.
 
+## 4. Page complète « Histoire de Tanger » (2026-11-12)
+
+### Source et intégration
+- Page fournie via `https://ucfzem.github.io/droppy/get.html?id=e2a57f56`.
+- Zip réel : `https://ucfzem.azer-tyu199p.workers.dev/droppy/dl/e2a57f56/tanger-histoire-update.zip` (sha256 `25142a57665e00e24997b3a0c3a79a39bc41b33acab985ec55ff8a522128fe22`).
+- Fichiers intégrés dans `ucfzem/tanger` :
+  - `index.html` : lien nav `histoire/`, bouton « Lire l'histoire complète → », traductions `history_more` FR/EN/ES/AR ;
+  - `sitemap.xml` : ajout de `https://ucfzem.github.io/tanger/histoire/` (42 URLs) ;
+  - `histoire/index.html` : page complète, 12 chapitres, 22 figures, 17 liens de table des matières.
+
+### Images
+- Les 24 références `images.openai.com` renvoyaient **HTTP 400 publiquement** (pas seulement dans la sandbox).
+- Elles ont été remplacées par des photos locales `../images/...` : 2 références hero + 22 figures.
+- Hero local : `../images/cap-spartel-1920.jpg`.
+- Vérifié : aucune URL `images.openai.com` restante, aucun HTTP ≥ 400 sur les images, 22/22 figures chargées après scroll.
+
+### Tests locaux
+- HTML valide sur `index.html` et `histoire/index.html`.
+- 342 clés `data-i18n` : aucune manquante dans les 4 langues (AR/EN/FR/ES).
+- FR/EN/ES : zéro caractère arabe résiduel après changement de langue ; AR : rendu RTL correct.
+- Page histoire : thème sombre `body rgb(10, 8, 5)`, 12 chapitres visibles, `content-visibility` désactivé, 22 images locales, TOC non sticky (17 liens), 4 drapeaux, aucun overflow, aucune erreur JS, mode low-end sombre.
+- Page principale : nav `histoire/`, bouton traduit, 60 images de galerie visibles/chargées, 4 drapeaux, aucun overflow, aucune erreur JS.
+- Faux négatifs de test corrigés : images lazy comptées avant scroll, TOC attendu à tort ≥ 18 alors que 17 est correct, sélecteur `.flag` au lieu de `.lang-flag`.
+
+### Live vérifié
+- Commit : `a893be0` — `Add full Tangier history page with local archive images`
+- `index.html` : 115 114 octets, sha256 `e326255751780e1b8c4800b784994b4bfa02761605aaf6270f1f6c557a3548f6`
+- `histoire/index.html` : 269 196 octets, sha256 `aa82f856b5ef497991aa7393e9382c2f61a3475ef9ea00881e8b1fc2dae2a424`
+- GitHub Pages et worker Cloudflare servent exactement les mêmes fichiers.
+- 16 combinaisons testées en live (2 domaines × 4 langues × desktop/mobile), toutes OK.
+- Persistance de langue testée sur les 2 domaines : EN depuis la page principale → page histoire, puis AR depuis l'histoire → page principale.
+- Aucun service worker ajouté ou modifié.
+
 ## Liens
 - Checkers live : https://ucfzem.github.io/checkers/
 - Commit Checkers : https://github.com/ucfzem/ucfzem.github.io/commit/93e7a25
 - Tanger live : https://ucfzem.github.io/tanger/
 - Tanger worker : https://ucfzem.azer-tyu199p.workers.dev/tanger/
+- Histoire live : https://ucfzem.github.io/tanger/histoire/
+- Histoire worker : https://ucfzem.azer-tyu199p.workers.dev/tanger/histoire/
 - Commit Tanger (section Histoire) : https://github.com/ucfzem/tanger/commit/841d3e7
 - Commit Tanger (correctif galerie + drapeaux) : https://github.com/ucfzem/tanger/commit/0fcfffe
+- Commit Tanger (page complète Histoire) : https://github.com/ucfzem/tanger/commit/a893be0
 - Dépôt Tanger : https://github.com/ucfzem/tanger
 - Backup : https://github.com/ucfzem/session-backups/blob/main/CONVERSATION-2026-11-11-checkers-capture-rules-et-tanger-diagnostic.md
