@@ -127,7 +127,8 @@ Verification:
 - Tanger gallery: 60/60 images eager and loaded; lightbox before/after images loaded.
 - Tanger Histoire: 10/10 images eager and loaded.
 - Earth Proofs: 200/200 card images eager and loaded; modal image eager; TV mode content visibility `visible`.
-- Live GitHub Pages tests passed for the same counts.
+- Live GitHub Pages tests: gallery 60/60 loaded on mobile; Histoire 10/10; Earth Proofs 200/200.
+- Live TV-UA gallery test showed all 60 eager requests started with zero failed requests; only 12 had finished after 15 s on the test connection, confirming a bandwidth delay rather than a lazy-loading failure.
 - FR/EN/ES fonts still unchanged; Arabic remains Amiri.
 
 Cloudflare worker check:
