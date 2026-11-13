@@ -60,7 +60,7 @@ Files: `index.html`, `style.css`, `app.js`, `sw.js`
 - Drawer on TV focuses the first proof item instead of only the close button.
 - Closing a modal restores focus to the originating proof card when available.
 - Added explicit modal image dimensions (`1200×675`) to prevent layout shift.
-- Bumped app version to `v1.2.0` and service-worker cache to `earth-proofs-shell-v1.5.0`.
+- Bumped app version to `v1.2.1` and service-worker cache to `earth-proofs-shell-v1.5.1` (see addendum).
 
 ## Tests performed
 ### Tanger Histoire
@@ -128,10 +128,21 @@ Verification:
 - Tanger Histoire: 10/10 images eager and loaded.
 - Earth Proofs: 200/200 card images eager and loaded; modal image eager; TV mode content visibility `visible`.
 - Live GitHub Pages tests: gallery 60/60 loaded on mobile; Histoire 10/10; Earth Proofs 200/200.
-- Live TV-UA gallery test showed all 60 eager requests started with zero failed requests; only 12 had finished after 15 s on the test connection, confirming a bandwidth delay rather than a lazy-loading failure.
+- Live TV-UA gallery test showed all 60 eager requests started with zero failed requests; a longer final wait loaded 60/60, confirming slower bandwidth rather than a lazy-loading failure.
 - FR/EN/ES fonts still unchanged; Arabic remains Amiri.
 
 Cloudflare worker check:
-- `https://ucfzem.azer-tyu199p.workers.dev/histoire/` returned HTTP 404.
-- Its root currently serves the Works page, not Tanger Histoire.
-- Use `https://ucfzem.github.io/tanger/histoire/` until the worker route is fixed.
+- `https://ucfzem.azer-tyu199p.workers.dev/histoire/` returns HTTP 404 because that worker serves the site root, not a Tanger-only origin.
+- Correct worker paths: `https://ucfzem.azer-tyu199p.workers.dev/tanger/` and `https://ucfzem.azer-tyu199p.workers.dev/tanger/histoire/` both return HTTP 200.
+- Its root serves the Works page, not Tanger Histoire.
+- Canonical links remain the GitHub Pages URLs above.
+
+## Final verification — 2026-11-13
+- Local and live GitHub Pages files match byte-for-byte for Tanger `index.html`, `histoire/index.html`, Earth Proofs `index.html`, `style.css`, `app.js`, and `sw.js`.
+- Tanger gallery live: 60/60 images eager and loaded, lightbox before/after loaded, no horizontal overflow.
+- Tanger Histoire live, TV UA 1280×720: `tv-mode` + `lite-mode`, 10/10 images eager/loaded with dimensions, nav blur `none`, noise overlay `none`, 3 px focus outline, TOC offset within 1 px.
+- Earth Proofs live, TV UA 1280×720: 200/200 cards and images eager/loaded, card `content-visibility: visible`, header blur `none`, drawer D-pad works, modal closes with focus restored, app `v1.2.1`.
+- Earth Proofs live normal mode: card `content-visibility: auto`; SW controls page with `earth-proofs-shell-v1.5.1`; offline reload still shows 200 cards.
+- Fonts live: Arabic uses Amiri; FR/EN/ES stay Cormorant/Playfair on Tanger and Inter on Earth Proofs. Tanger FR/EN/ES computed fonts show zero differences vs baseline.
+- Local static audit: no duplicate IDs, no missing local assets, no broken local anchors.
+- No application console errors or page errors in the final tests.
